@@ -46,7 +46,7 @@ pipeline {
                 script {
                     echo 'deploying docker image...'
                     sh 'aws eks update-kubeconfig --name myapp-eks-cluster --region eu-central-1'
-                    
+                    sh 'kubectl apply  -f k8s/mongo.yaml'   
                     sh 'envsubst < k8s/deployment.yaml | kubectl apply  -f -'              
                 }
             }
