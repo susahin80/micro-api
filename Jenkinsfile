@@ -27,7 +27,7 @@ pipeline {
                 script {
                     echo "building the docker image..."
                     withCredentials([usernamePassword(credentialsId: 'docker-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                        sh "docker build -t susah80/micro-api:${VERSION} ."
+                        sh "docker build -t susah80/micro-api:${VERSION} --target prod ."
                         sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
                         sh "docker push susah80/micro-api:${VERSION}"
                     }
@@ -56,17 +56,20 @@ pipeline {
        stage('commit version update') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+
+                    withCredentials([string(credentialsId: 'jenkins-github-token' , variable: 'GITHUB_TOKEN')]) {
                         // git config here for the first time run
                         sh 'git config --global user.email "jenkins@example.com"'
                         sh 'git config --global user.name "jenkins"'
 
                         sh 'git status'
-                        sh "git remote set-url origin https://${USERNAME}:${PASSWORD}@github.com/susahin80/micro-api.git"
+                        sh "git remote set-url origin https://${GITHUB_TOKEN}@github.com/susahin80/micro-api.git"
                         sh 'git add .'
                         sh 'git commit -m "[ci-skip]"'
-                        sh 'git push origin HEAD:main'
+                        sh 'git push origin HEAD:master'
                     }
+
+
                 }
             }
         }
