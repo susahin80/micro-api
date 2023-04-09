@@ -31,6 +31,10 @@ app.get("/api", async (req, res) => {
   res.send(tasks);
 });
 
+app.get("/api/test", async (req, res) => {
+  res.json({message: "hello world"});
+});
+
 app.post("/api", async (req, res) => {
   const { task } = req.body;
 
