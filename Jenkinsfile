@@ -27,7 +27,7 @@ pipeline {
                 script {
                     echo "building the docker image..."
                     withCredentials([usernamePassword(credentialsId: 'docker-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                        sh "sudo chmod 666 /var/run/docker.sock"
+                        sh "chmod 666 /var/run/docker.sock"
                         sh "docker build -t susah80/micro-api:${VERSION} --target prod ."
                         sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
                         sh "docker push susah80/micro-api:${VERSION}"
